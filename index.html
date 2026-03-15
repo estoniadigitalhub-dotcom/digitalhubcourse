@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Build a Website in an Afternoon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F7F2E8;
+    --ink: #1A1510;
+    --terracotta: #C85A1A;
+    --burnt: #8B3A0F;
+    --sage: #6A8C6F;
+    --gold: #C8951A;
+    --mist: #E8E2D4;
+    --pale: #FAF7F2;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background-color: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    border-bottom: 1.5px solid rgba(26,21,16,0.12);
+    position: sticky;
+    top: 0;
+    background: rgba(247,242,232,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    font-weight: 500;
+  }
+
+  nav {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  nav a:hover { opacity: 1; }
+
+  .enroll-btn {
+    background: var(--terracotta);
+    color: var(--cream) !important;
+    opacity: 1 !important;
+    padding: 0.6rem 1.4rem;
+    border-radius: 2px;
+    transition: background 0.2s !important;
+  }
+
+  .enroll-btn:hover { background: var(--burnt) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 7rem 4rem 5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 1.5px;
+    background: var(--terracotta);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(3rem, 5vw, 4.8rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: rgba(26,21,16,0.65);
+    max-width: 420px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 1rem 2.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--terracotta);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.55;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-secondary:hover { opacity: 1; }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(26,21,16,0.1);
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.45;
+  }
+
+  /* ── HERO RIGHT (clock illustration) ── */
+  .hero-right {
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 4rem;
+  }
+
+  .clock-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .clock-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.35);
+  }
+
+  .clock-face {
+    width: 260px;
+    height: 260px;
+    border: 2px solid rgba(247,242,232,0.15);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .clock-face::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(247,242,232,0.06);
+  }
+
+  .clock-center {
+    width: 10px;
+    height: 10px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    position: absolute;
+    z-index: 10;
+  }
+
+  .clock-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 4px;
+  }
+
+  .hour-hand {
+    width: 3px;
+    height: 72px;
+    background: var(--cream);
+    margin-left: -1.5px;
+    transform: rotate(15deg); /* ~1pm-ish */
+  }
+
+  .minute-hand {
+    width: 2px;
+    height: 96px;
+    background: rgba(247,242,232,0.5);
+    margin-left: -1px;
+    transform: rotate(180deg); /* pointing to 6 */
+  }
+
+  .second-hand {
+    width: 1px;
+    height: 108px;
+    background: var(--terracotta);
+    margin-left: -0.5px;
+    transform: rotate(0deg);
+    animation: tick 60s steps(60) infinite;
+  }
+
+  @keyframes tick {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Hour markers */
+  .tick-mark {
+    position: absolute;
+    width: 1.5px;
+    height: 12px;
+    background: rgba(247,242,232,0.25);
+    top: 10px;
+    left: 50%;
+    margin-left: -0.75px;
+    transform-origin: bottom center;
+  }
+
+  .tick-mark.major {
+    height: 18px;
+    width: 2px;
+    background: rgba(247,242,232,0.5);
+    margin-left: -1px;
+  }
+
+  .afternoon-arc {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--terracotta);
+    border-right-color: var(--terracotta);
+    opacity: 0.6;
+    transform: rotate(15deg);
+  }
+
+  .clock-caption {
+    text-align: center;
+  }
+
+  .clock-time-range {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--cream);
+    opacity: 0.8;
+    display: block;
+  }
+
+  .clock-caption small {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.3);
+    display: block;
+    margin-top: 0.4rem;
+  }
+
+  /* decorative circles */
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    border: 1px solid rgba(247,242,232,0.04);
+    top: -100px;
+    right: -150px;
+  }
+
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,90,26,0.1);
+    bottom: -60px;
+    left: -80px;
+  }
+
+  /* ── MARQUEE STRIP ── */
+  .marquee-strip {
+    background: var(--terracotta);
+    padding: 0.85rem 0;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .marquee-inner {
+    display: flex;
+    gap: 0;
+    animation: marquee 28s linear infinite;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .marquee-inner:nth-child(2) {
+    animation-delay: -14s;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .marquee-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.75);
+    padding: 0 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  .marquee-item span.dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(247,242,232,0.4);
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 6rem 4rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-tag::before {
+    content: '';
+    display: block;
+    width: 1.8rem;
+    height: 1.5px;
+    background: var(--terracotta);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  /* ── WHAT YOU'LL BUILD ── */
+  .build-section {
+    background: var(--ink);
+    padding: 6rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .build-section-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .build-section .section-tag {
+    color: rgba(247,242,232,0.4);
+  }
+
+  .build-section .section-tag::before {
+    background: rgba(247,242,232,0.2);
+  }
+
+  .build-section .section-title {
+    color: var(--cream);
+  }
+
+  .build-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(247,242,232,0.08);
+    border: 1px solid rgba(247,242,232,0.08);
+    margin-top: 3.5rem;
+  }
+
+  .build-card {
+    background: var(--ink);
+    padding: 2.5rem;
+    position: relative;
+    transition: background 0.25s;
+    cursor: default;
+  }
+
+  .build-card:hover {
+    background: rgba(247,242,232,0.04);
+  }
+
+  .build-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: rgba(247,242,232,0.06);
+    line-height: 1;
+    margin-bottom: -0.5rem;
+    user-select: none;
+  }
+
+  .build-icon {
+    width: 42px;
+    height: 42px;
+    background: rgba(200,90,26,0.15);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .build-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 0.7rem;
+  }
+
+  .build-card-desc {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: rgba(247,242,232,0.45);
+  }
+
+  .build-section::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,90,26,0.07) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+    pointer-events: none;
+  }
+
+  /* ── SCHEDULE / MODULES ── */
+  .schedule-section {
+    padding: 6rem 4rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .schedule-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    align-items: end;
+  }
+
+  .schedule-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: rgba(26,21,16,0.6);
+  }
+
+  .modules-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .module-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0;
+    position: relative;
+  }
+
+  .module-time {
+    padding: 2.2rem 2rem 2.2rem 0;
+    border-right: 2px solid rgba(26,21,16,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+  }
+
+  .module-time::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid rgba(26,21,16,0.15);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .module-row:hover .module-time::after {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+  }
+
+  .time-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
+  .time-duration {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-top: 0.2rem;
+  }
+
+  .module-content {
+    padding: 2.2rem 0 2.2rem 2.5rem;
+    border-bottom: 1px solid rgba(26,21,16,0.06);
+    cursor: pointer;
+    transition: padding-left 0.2s;
+  }
+
+  .module-row:last-child .module-content {
+    border-bottom: none;
+  }
+
+  .module-row:hover .module-content {
+    padding-left: 2.8rem;
+  }
+
+  .module-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.5rem;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .module-desc {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: rgba(26,21,16,0.55);
+    margin-bottom: 1rem;
+  }
+
+  .module-lessons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .lesson-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    background: var(--mist);
+    border-radius: 100px;
+    color: rgba(26,21,16,0.55);
+  }
+
+  /* ── WHAT'S INCLUDED ── */
+  .included-section {
+    background: var(--pale);
+    padding: 6rem 4rem;
+    border-top: 1px solid rgba(26,21,16,0.07);
+    border-bottom: 1px solid rgba(26,21,16,0.07);
+  }
+
+  .included-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .included-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .included-card {
+    background: var(--cream);
+    border: 1px solid rgba(26,21,16,0.08);
+    border-radius: 3px;
+    padding: 2rem 2.2rem;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .included-card:hover {
+    box-shadow: 0 8px 32px rgba(26,21,16,0.08);
+    transform: translateY(-2px);
+  }
+
+  .included-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--ink);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .included-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .included-desc {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: rgba(26,21,16,0.55);
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 6rem 4rem;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .testimonial-card {
+    background: var(--cream);
+    border: 1px solid rgba(26,21,16,0.08);
+    padding: 2rem 2.2rem;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  .testimonial-card::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--terracotta);
+    opacity: 0.25;
+    position: absolute;
+    top: 1rem;
+    left: 1.8rem;
+  }
+
+  .testimonial-text {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: rgba(26,21,16,0.7);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .author-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cream);
+    flex-shrink: 0;
+  }
+
+  .author-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    display: block;
+  }
+
+  .author-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    background: var(--terracotta);
+    padding: 7rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cta-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.6);
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-sub {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(247,242,232,0.7);
+    margin-bottom: 3rem;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta-primary {
+    background: var(--cream);
+    color: var(--terracotta);
+    padding: 1rem 2.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 500;
+  }
+
+  .btn-cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(26,21,16,0.25);
+  }
+
+  .btn-cta-ghost {
+    background: transparent;
+    color: var(--cream);
+    padding: 1rem 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1.5px solid rgba(247,242,232,0.4);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-cta-ghost:hover {
+    border-color: rgba(247,242,232,0.9);
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(247,242,232,0.08);
+    top: -350px;
+    right: -250px;
+  }
+
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(247,242,232,0.06);
+    bottom: -200px;
+    left: -100px;
+  }
+
+  .price-tag {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .price-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .price-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.5);
+  }
+
+  .price-strike {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: rgba(247,242,232,0.35);
+    text-decoration: line-through;
+    margin-left: 0.5rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.3);
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: rgba(247,242,232,0.2);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247,242,232,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: rgba(247,242,232,0.7); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow  { animation: fadeUp 0.6s ease both; }
+  .hero-title    { animation: fadeUp 0.6s 0.1s ease both; }
+  .hero-subtitle { animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-actions  { animation: fadeUp 0.6s 0.3s ease both; }
+  .hero-stats    { animation: fadeUp 0.6s 0.4s ease both; }
+  .clock-scene   { animation: fadeUp 0.8s 0.2s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    header { padding: 1.2rem 2rem; }
+    nav { display: none; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 4rem 2rem 3rem; }
+    .hero-right { display: none; }
+    section, .schedule-section, .testimonials-section { padding: 4rem 2rem; }
+    .build-section, .included-section { padding: 4rem 2rem; }
+    .build-grid { grid-template-columns: 1fr; }
+    .schedule-header { grid-template-columns: 1fr; gap: 1rem; }
+    .included-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .cta-section { padding: 5rem 2rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">Craft Academy</div>
+  <nav>
+    <a href="#schedule">Schedule</a>
+    <a href="#included">What's Included</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="https://buy.stripe.com/14A8wRdvObEg8ZIc11dwc02" target="_blank" class="enroll-btn">Enroll Now</a>
+  </nav>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">One Afternoon Course</div>
+    <h1 class="hero-title">Build a Website<br/>in an <em>Afternoon</em></h1>
+    <p class="hero-subtitle">
+      Plan, design, write, and launch a professional website in a single focused session —
+      no prior experience needed, no developer required.
+    </p>
+    <div class="hero-actions">
+      <a href="#enroll" class="btn-primary">Start Building Today</a>
+      <a href="#schedule" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3.5l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        See the schedule
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <span class="stat-num">4hrs</span>
+        <span class="stat-label">Total length</span>
+      </div>
+      <div>
+        <span class="stat-num">12</span>
+        <span class="stat-label">Lessons</span>
+      </div>
+      <div>
+        <span class="stat-num">4,200+</span>
+        <span class="stat-label">Graduates</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="clock-scene">
+      <span class="clock-label">Your afternoon starts now</span>
+
+      <div class="clock-face">
+        <!-- tick marks -->
+        <div class="tick-mark major" style="transform: rotate(0deg) translateY(-119px) rotate(0deg);"></div>
+        <div class="tick-mark" style="transform: rotate(30deg) translateY(-119px) rotate(-30deg);"></div>
+        <div class="tick-mark" style="transform: rotate(60deg) translateY(-119px) rotate(-60deg);"></div>
+        <div class="tick-mark major" style="transform: rotate(90deg) translateY(-119px) rotate(-90deg);"></div>
+        <div class="tick-mark" style="transform: rotate(120deg) translateY(-119px) rotate(-120deg);"></div>
+        <div class="tick-mark" style="transform: rotate(150deg) translateY(-119px) rotate(-150deg);"></div>
+        <div class="tick-mark major" style="transform: rotate(180deg) translateY(-119px) rotate(-180deg);"></div>
+        <div class="tick-mark" style="transform: rotate(210deg) translateY(-119px) rotate(-210deg);"></div>
+        <div class="tick-mark" style="transform: rotate(240deg) translateY(-119px) rotate(-240deg);"></div>
+        <div class="tick-mark major" style="transform: rotate(270deg) translateY(-119px) rotate(-270deg);"></div>
+        <div class="tick-mark" style="transform: rotate(300deg) translateY(-119px) rotate(-300deg);"></div>
+        <div class="tick-mark" style="transform: rotate(330deg) translateY(-119px) rotate(-330deg);"></div>
+
+        <!-- highlighted afternoon arc -->
+        <div class="afternoon-arc"></div>
+
+        <!-- hands -->
+        <div class="clock-hand hour-hand"></div>
+        <div class="clock-hand minute-hand"></div>
+        <div class="clock-hand second-hand"></div>
+        <div class="clock-center"></div>
+      </div>
+
+      <div class="clock-caption">
+        <span class="clock-time-range">1:00 pm — 5:00 pm</span>
+        <small>One session. One live website.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-strip" aria-hidden="true">
+  <div class="marquee-inner">
+    <span class="marquee-item">Plan your site <span class="dot"></span></span>
+    <span class="marquee-item">Choose a platform <span class="dot"></span></span>
+    <span class="marquee-item">Write your copy <span class="dot"></span></span>
+    <span class="marquee-item">Design the pages <span class="dot"></span></span>
+    <span class="marquee-item">Add your content <span class="dot"></span></span>
+    <span class="marquee-item">Go live <span class="dot"></span></span>
+    <span class="marquee-item">Plan your site <span class="dot"></span></span>
+    <span class="marquee-item">Choose a platform <span class="dot"></span></span>
+    <span class="marquee-item">Write your copy <span class="dot"></span></span>
+    <span class="marquee-item">Design the pages <span class="dot"></span></span>
+    <span class="marquee-item">Add your content <span class="dot"></span></span>
+    <span class="marquee-item">Go live <span class="dot"></span></span>
+  </div>
+</div>
+
+<!-- ── WHAT YOU'LL BUILD ── -->
+<div class="build-section">
+  <div class="build-section-inner">
+    <div class="section-tag" style="color: rgba(247,242,232,0.4);">
+      <span style="display:block;width:1.8rem;height:1.5px;background:rgba(247,242,232,0.2);"></span>
+      What You'll Build
+    </div>
+    <h2 class="section-title" style="color:var(--cream); max-width: 540px;">
+      A real site you're<br/><em>proud</em> to share
+    </h2>
+
+    <div class="build-grid">
+      <div class="build-card">
+        <div class="build-number">01</div>
+        <div class="build-icon">🏠</div>
+        <div class="build-card-title">A polished homepage</div>
+        <p class="build-card-desc">A clear, compelling first impression that tells visitors exactly who you are and what you offer.</p>
+      </div>
+      <div class="build-card">
+        <div class="build-number">02</div>
+        <div class="build-icon">📋</div>
+        <div class="build-card-title">An about & services page</div>
+        <p class="build-card-desc">Pages that build trust, showcase your work, and explain your offer in plain, persuasive language.</p>
+      </div>
+      <div class="build-card">
+        <div class="build-number">03</div>
+        <div class="build-icon">✉️</div>
+        <div class="build-card-title">A contact & lead form</div>
+        <p class="build-card-desc">A working contact form that captures enquiries, with a custom domain and professional email.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCHEDULE ── -->
+<div id="schedule" class="schedule-section">
+  <div class="section-tag">The Afternoon Schedule</div>
+  <div class="schedule-header">
+    <h2 class="section-title">Four hours.<br/><em>Five modules.</em></h2>
+    <p class="schedule-intro">
+      Every lesson is structured around a single deliverable you can complete and move on from. No fluff, no rabbit holes —
+      just a clear path from blank page to live website.
+    </p>
+  </div>
+
+  <div class="modules-timeline">
+
+    <div class="module-row">
+      <div class="module-time">
+        <span class="time-label">1:00 pm</span>
+        <span class="time-duration">45 min</span>
+      </div>
+      <div class="module-content">
+        <div class="module-tag">Module 1 — Foundation</div>
+        <h3 class="module-title">Plan Before You Build</h3>
+        <p class="module-desc">Define your site's single goal, map your pages, and write a one-sentence pitch that anchors every decision you'll make this afternoon.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">The one-goal rule</span>
+          <span class="lesson-pill">Page map template</span>
+          <span class="lesson-pill">Audience clarity exercise</span>
+          <span class="lesson-pill">Your site brief</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-row">
+      <div class="module-time">
+        <span class="time-label">1:45 pm</span>
+        <span class="time-duration">45 min</span>
+      </div>
+      <div class="module-content">
+        <div class="module-tag">Module 2 — Platform</div>
+        <h3 class="module-title">Choose Your Builder & Get Set Up</h3>
+        <p class="module-desc">We compare the top no-code platforms (Squarespace, Webflow, Framer), pick the right one for your needs, and get your account and domain sorted in one go.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Platform comparison</span>
+          <span class="lesson-pill">Domain registration</span>
+          <span class="lesson-pill">Template selection</span>
+          <span class="lesson-pill">Workspace setup</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-row">
+      <div class="module-time">
+        <span class="time-label">2:30 pm</span>
+        <span class="time-duration">60 min</span>
+      </div>
+      <div class="module-content">
+        <div class="module-tag">Module 3 — Copy & Content</div>
+        <h3 class="module-title">Write Words That Actually Work</h3>
+        <p class="module-desc">Use fill-in-the-blank frameworks to write every headline, subline, and paragraph on your site — no writer's block, no staring at blank boxes.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Headline formulas</span>
+          <span class="lesson-pill">Hero section script</span>
+          <span class="lesson-pill">About page framework</span>
+          <span class="lesson-pill">Call-to-action writing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-row">
+      <div class="module-time">
+        <span class="time-label">3:30 pm</span>
+        <span class="time-duration">60 min</span>
+      </div>
+      <div class="module-content">
+        <div class="module-tag">Module 4 — Design</div>
+        <h3 class="module-title">Make It Look Like You Hired Someone</h3>
+        <p class="module-desc">Apply a cohesive visual system — fonts, colours, spacing, and imagery — using our foolproof design rules. No taste required, just follow the checklist.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Colour palette builder</span>
+          <span class="lesson-pill">Font pairing rules</span>
+          <span class="lesson-pill">Free image sourcing</span>
+          <span class="lesson-pill">Mobile review checklist</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module-row">
+      <div class="module-time">
+        <span class="time-label">4:30 pm</span>
+        <span class="time-duration">30 min</span>
+      </div>
+      <div class="module-content">
+        <div class="module-tag">Module 5 — Launch</div>
+        <h3 class="module-title">Go Live & Tell People About It</h3>
+        <p class="module-desc">Run the pre-launch checklist, publish to your domain, set up Google Search Console, and send your first announcement — all before dinner.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Pre-launch checklist</span>
+          <span class="lesson-pill">Google Search Console</span>
+          <span class="lesson-pill">Launch announcement</span>
+          <span class="lesson-pill">What comes next</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── WHAT'S INCLUDED ── -->
+<div id="included" class="included-section">
+  <div class="included-inner">
+    <div class="section-tag">What's Included</div>
+    <h2 class="section-title">Everything you need,<br/><em>nothing you don't</em></h2>
+
+    <div class="included-grid">
+      <div class="included-card">
+        <div class="included-icon">🎬</div>
+        <div>
+          <div class="included-title">12 step-by-step video lessons</div>
+          <p class="included-desc">Follow along in real time as we build a real website together, screen-by-screen, click-by-click.</p>
+        </div>
+      </div>
+      <div class="included-card">
+        <div class="included-icon">📝</div>
+        <div>
+          <div class="included-title">Copy frameworks & fill-in templates</div>
+          <p class="included-desc">Proven scripts for every page section. Write professional copy without staring at a blank cursor.</p>
+        </div>
+      </div>
+      <div class="included-card">
+        <div class="included-icon">✅</div>
+        <div>
+          <div class="included-title">Pre-launch & design checklists</div>
+          <p class="included-desc">Catch every mistake before it goes live. Two thorough checklists covering design, copy, and SEO basics.</p>
+        </div>
+      </div>
+      <div class="included-card">
+        <div class="included-icon">🎨</div>
+        <div>
+          <div class="included-title">Swipe-file of fonts, colours & images</div>
+          <p class="included-desc">Curated free resources so you never waste time searching. Just pick, apply, and move on.</p>
+        </div>
+      </div>
+      <div class="included-card">
+        <div class="included-icon">💬</div>
+        <div>
+          <div class="included-title">Private community access</div>
+          <p class="included-desc">Share your site, get feedback, and ask questions in a friendly group of fellow first-time builders.</p>
+        </div>
+      </div>
+      <div class="included-card">
+        <div class="included-icon">♾️</div>
+        <div>
+          <div class="included-title">Lifetime access & future updates</div>
+          <p class="included-desc">The web changes. Your course keeps up. Every update and new lesson is yours at no extra cost, forever.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TESTIMONIALS ── -->
+<div id="testimonials" class="testimonials-section">
+  <div class="section-tag">Student Reviews</div>
+  <h2 class="section-title">Built by real people,<br/><em>just like you</em></h2>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <p class="testimonial-text">I had zero technical skills and a very clear deadline. By 5pm my site was live. I honestly couldn't believe it was that straightforward.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:var(--sage);">SR</div>
+        <div>
+          <span class="author-name">Sophie R.</span>
+          <span class="author-role">Freelance Illustrator</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <p class="testimonial-text">I'd been putting off building a site for two years. The copy frameworks alone were worth ten times the price — I finally had words that made sense.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:var(--terracotta);">JM</div>
+        <div>
+          <span class="author-name">James M.</span>
+          <span class="author-role">Business Consultant</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <p class="testimonial-text">The step-by-step format meant I never got lost or overwhelmed. My site looks genuinely professional and I'm so proud of it.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:var(--gold);">CA</div>
+        <div>
+          <span class="author-name">Clara A.</span>
+          <span class="author-role">Ceramics Studio Owner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CTA ── -->
+<div id="enroll" class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">Ready to build yours?</div>
+    <h2 class="cta-title">One afternoon is all it takes.</h2>
+    <p class="cta-sub">Join 4,200+ people who stopped waiting and finally launched the site they've been putting off.</p>
+
+    <div class="price-tag">
+      <span class="price-amount">$79</span>
+      <span class="price-period">one-time</span>
+      <span class="price-strike">$149</span>
+    </div>
+
+    <div class="cta-buttons">
+      <a href="https://buy.stripe.com/14A8wRdvObEg8ZIc11dwc02" target="_blank" class="btn-cta-primary">Enroll &amp; Start Today</a>
+      <a href="#schedule" class="btn-cta-ghost">View full curriculum</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Craft Academy</div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">FAQ</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div class="footer-copy">© 2026 Craft Academy. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
